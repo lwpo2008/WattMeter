@@ -26,7 +26,7 @@
     ps：注意我用的是USB转485串口，因此wattmeter.py文件的第13行用的是'/dev/ttyUSB0'
     
 成品效果图：
-
+![成品效果图](https://github.com/lwpo2008/WattMeter/blob/master/20200114164538.jpg)
 
 
 
