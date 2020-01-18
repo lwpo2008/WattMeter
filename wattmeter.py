@@ -26,9 +26,9 @@ class ReadMsg():
 		self.dianbiao = {
 				'201':['010097796152','-1','-1'],
 				'202':['010126762145','-1','-1'],
-				'301':['091701262308','-1','-1'],
-				'302':['091701262309','-1','-1'],
-				'401':['091701253660','-1','-1'],
+				'301':['010097796152','-1','-1'],
+				'302':['010126762145','-1','-1'],
+				'401':['010097796152','-1','-1'],
 				'402':['010126762146','-1','-1'],
 				'501':['010097796153','-1','-1'],
 				'502':['010126762145','-1','-1'],
@@ -139,8 +139,11 @@ class ReadMsg():
 				s += L
 				for i in range(ord(L)+2):
 					s += self.ser.read()
-				print(s)
-				self.dianbiao[room][1] = self.DecodeMsg(s)[1]
+				result = self.DecodeMsg(s)
+				if result != False:
+					self.dianbiao[room][1] = result[1]
+				else:
+					self.dianbiao[room][1] = '失败'
 			else:
 				self.dianbiao[room][1] = '失败'
 			self.ser.reset_input_buffer()
@@ -156,8 +159,11 @@ class ReadMsg():
 				s += L
 				for i in range(ord(L)+2):
 					s += self.ser.read()
-				print(s)
-				self.dianbiao[room][2] = self.DecodeMsg(s)[1]
+				result = self.DecodeMsg(s)
+				if result != False:
+					self.dianbiao[room][2] = result[1]
+				else:
+					self.dianbiao[room][2] = '失败'
 			else:
 				self.dianbiao[room][2] = '失败'
 			self.ser.reset_input_buffer()
@@ -167,10 +173,4 @@ class ReadMsg():
 	def __del__(self):
 		if self.ser.isOpen():
 			self.ser.close() 
-			print('串口已关闭！')
-
-		#self.ser.write(self.CreatMsg(self.dianbiao['201'],self.zuheyougong))			#发送读数要求
-		#self.dianbiao['201'][1]=self.DecodeMsg(self.ser.readline())[1]					#读数据
-
-		#self.ser.write(self.CreatMsg(self.dianbiao['202'],self.zuheyougong))			#发送读数要求
-		#self.dianbiao['202'][1]=self.DecodeMsg(self.ser.readline())[1]					#读数据
+		print('串口已关闭！')
