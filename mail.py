@@ -14,7 +14,7 @@ class SendMail():
         self.host_server = 'smtp.sina.com'
         # sender_mail为发件人的邮箱
         self.sender = 'xxxxxx@sina.com'
-        # pwd为126邮箱的授权码
+        # pwd为邮箱的授权码
         self.pwd = 'xxxxxxxxxx'  
         # 收件人邮箱
         self.receiver = 'xxxxxxxx@qq.com'
