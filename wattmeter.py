@@ -10,12 +10,13 @@ class ReadMsg():
 		try:
 			self.ser = serial.Serial(
 			#	'/dev/ttyAMA0',					#linux系统的串口号，windows为COM1等
-				'/dev/ttyUSB0',
+			#	'/dev/ttyUSB0',
+				'COM3',
 				baudrate=2400,					#设置为电表默认波特率
 				bytesize=serial.EIGHTBITS,		#8位
 				parity=serial.PARITY_EVEN,		#偶校验，电表(DL/T645-2007)为偶校验
 				stopbits=serial.STOPBITS_ONE,	#1位停止位
-				timeout=0.5						#读超时，设置为1秒
+				timeout=0.5						#读超时，单位为秒
 				)
 		except:
 			#初始化失败标志
@@ -119,6 +120,50 @@ class ReadMsg():
 				self.dianbiao[k][2] = self.DecodeMsg(s)[1]
 		self.ser.close()
 
+	def achieve(self):
+		#打开串口
+		if self.ser.isOpen():
+			pass
+		else:
+			self.ser.open()
+		for room,data in self.dianbiao.items():
+			#读取正向有功
+			self.ser.write(self.CreatMsg(self.dianbiao[room],self.zhengxiang))
+			s = self.ser.read()
+			if s != b'':
+				while(ord(s) != 0x68):
+					s = self.ser.read()
+				for i in range(8):
+					s += self.ser.read()
+				L = self.ser.read()
+				s += L
+				for i in range(ord(L)+2):
+					s += self.ser.read()
+				print(s)
+				self.dianbiao[room][1] = self.DecodeMsg(s)[1]
+			else:
+				self.dianbiao[room][1] = '失败'
+			self.ser.reset_input_buffer()
+			#读取上一个结算日正向有功
+			self.ser.write(self.CreatMsg(self.dianbiao[room],self.zxjiesuan1))
+			s = self.ser.read()
+			if s != b'':
+				while(ord(s) != 0x68):
+					s = self.ser.read()
+				for i in range(8):
+					s += self.ser.read()
+				L = self.ser.read()
+				s += L
+				for i in range(ord(L)+2):
+					s += self.ser.read()
+				print(s)
+				self.dianbiao[room][2] = self.DecodeMsg(s)[1]
+			else:
+				self.dianbiao[room][2] = '失败'
+			self.ser.reset_input_buffer()
+		#关闭串口
+		self.ser.close()
+	
 	def __del__(self):
 		if self.ser.isOpen():
 			self.ser.close() 
